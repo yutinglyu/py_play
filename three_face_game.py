@@ -12,16 +12,38 @@ Created on Fri Dec 20 14:56:54 2019
              7.选出牌型最大的玩家切牌，选择第一个抽牌的玩家；
              8.从第3步重新开始。
              9.两副牌以后换庄，所有人都做过一次庄为一轮。
-    比较大小：1.两鬼，6倍
-             2.大三公，6倍
-             3.混三公，4倍
+    比较大小：1.两鬼13，6倍
+             2.大三公12，6倍
+             3.混三公11，4倍
              4.9点，3倍
              5.8点，2倍
+             6.765432点，1倍
              6.0点、1点平则庄家赢
 @author: user
 """
 import random
 
+class Comparator:
+    @staticmethod
+    def compare_cards(bookmaker_cards, oppo_cards):
+        pass
+    
+    def give_rank(card_list):
+        if sum(['BJ' in x for x in card_list]) and sum(['RJ' in x for x in card_list]): # 两鬼
+            return 13
+        elif card_list[0][1] == card_list[1][1] == card_list[2][1]: # 大三公 KKK 333
+            return 12
+        elif ((sum(['BJ' in x for x in card_list]) + sum(['RJ' in x for x in card_list]) == 1))\
+             and (card_list[0][1] == card_list[1][1] != card_list[2][1] or\
+                   card_list[1][1] == card_list[2][1] != card_list[0][1] or\
+                    card_list[2][1] == card_list[0][1] != card_list[1][1]): # 大三公 KKJ 33J
+            return 12
+        elif : # 混三公 KKQ KKJ KQJ
+            
+        elif:
+            
+        pass
+    
 
 class Player:
     """
@@ -48,7 +70,7 @@ class Player:
         return self.wager
     # 切牌
     def cut_card(self, pokerDealer_obj):
-        choosed_number = random.sample(pokerDealer_obj.card_list, 1)[0][1]
+        choosed_number = random.sample(pokerDealer_obj.card_list, 1)[0][2]
         return (self.seat_index + choosed_number) % pokerDealer_obj.number_of_player    
     
 class PokerDealer:
@@ -57,15 +79,14 @@ class PokerDealer:
     """    
     def __init__(self, seats_order, number_of_player = 4,
                  if_joker = True):
-        suits = ['spade','heart','diamond','club']
+        suits = sorted(['spade','heart','diamond','club']*13)
         ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K']
-        single_cards = [(i+'_'+j) for i in suits for j in ranks]
-        self.card_list = list(zip(single_cards,list(range(1,14))*4))
+        self.card_list = list(zip(suits*13,ranks*4,list(range(1,14))*4,(list(range(1,10))+[0]*4)*4))
         self.seats_order = seats_order
         self.bookmaker_name = seats_order[0]
         if if_joker:
-            self.card_list.append(('Black_Joker',0))
-            self.card_list.append(('Red_Joker',0))   
+            self.card_list.append(('Black_Joker','BJ',0,0))
+            self.card_list.append(('Red_Joker','RJ',0,0))   
     # 属性
     if_joker = True
     number_of_player = 4
@@ -76,7 +97,7 @@ class PokerDealer:
     # 切牌选庄
     def choose_bookmaker(self):
         choosed_start_seat = random.randint(0, self.number_of_player-1)
-        choosed_number = random.sample(self.card_list, 1)[0][1]
+        choosed_number = random.sample(self.card_list, 1)[0][2]
         self.bookmaker_index = (choosed_start_seat + choosed_number) % self.number_of_player
         self.bookmaker_name = self.seats_order[self.bookmaker_index]
         return (self.bookmaker_name, self.bookmaker_index)
@@ -87,10 +108,7 @@ class PokerDealer:
         drawn_cards_list = random.sample(self.card_list, 3 * self.number_of_player)
         self.card_list = [x for x in self.card_list if x not in drawn_cards_list]
         return [drawn_cards_list[i:i+3] for i in range(0,len(drawn_cards_list),3)]
-    #　比较
-    @staticmethod
-    def compare_cards(self_cards, oppo_cards):
-        return 'win' 
+
     # 二人结算
     def deal_2player():
         pass    
@@ -120,8 +138,11 @@ def main():
         final_i = (first_draw_index + i) % pokerDealer.number_of_player
         player_list[final_i].self_cards = drawn_cards[i]
         player_list[final_i].assess_put_wager()
-    # 5.亮牌，分别与庄家进行比较（赢、输、平）,结算；
-    # 6.；
+    # 4.亮牌，分别与庄家进行比较（赢、输、平）,结算；
+    print(player1.name, player1.self_cards)
+    print(player2.name, player2.self_cards)
+    print(player3.name, player3.self_cards)
+    print(player4.name, player4.self_cards)
     # 7.选出牌型最大的玩家切牌，选择第一个抽牌的玩家；
     # 8.从第3步重新开始。
     # 9.两副牌以后换庄，所有人都做过一次庄为一轮。    
