@@ -26,7 +26,17 @@ import random
 class Comparator:
     @staticmethod
     def compare_cards(bookmaker_cards, oppo_cards):
-        pass
+        bookmaker_rank = Comparator.give_rank(bookmaker_cards)
+        oppo_rank = Comparator.give_rank(oppo_cards)
+        if bookmaker_rank > oppo_rank:
+            return 'win'
+        elif bookmaker_rank < oppo_rank:
+            return 'lose'
+        else:
+            if bookmaker_rank == 0 or bookmaker_rank == 1:
+                return 'win'
+            else:
+                return 'even'
     
     def give_rank(card_list):
         if sum(['BJ' in x for x in card_list]) and sum(['RJ' in x for x in card_list]): # 两鬼
@@ -36,13 +46,13 @@ class Comparator:
         elif ((sum(['BJ' in x for x in card_list]) + sum(['RJ' in x for x in card_list]) == 1))\
              and (card_list[0][1] == card_list[1][1] != card_list[2][1] or\
                    card_list[1][1] == card_list[2][1] != card_list[0][1] or\
-                    card_list[2][1] == card_list[0][1] != card_list[1][1]): # 大三公 KKJ 33J
+                    card_list[2][1] == card_list[0][1] != card_list[1][1]): # 大三公 KKJo 33Jo
             return 12
-        elif : # 混三公 KKQ KKJ KQJ
-            
-        elif:
-            
-        pass
+        elif (sum(['J' in x for x in card_list]) + sum(['Q' in x for x in card_list]) +\
+              sum(['K' in x for x in card_list])) == 3: # 混三公 KKQ KKJ KQJ 已经排除掉了大三公
+            return 11
+        else:
+            return (card_list[0][3] + card_list[1][3] + card_list[2][3]) % 10
     
 
 class Player:
@@ -139,10 +149,18 @@ def main():
         player_list[final_i].self_cards = drawn_cards[i]
         player_list[final_i].assess_put_wager()
     # 4.亮牌，分别与庄家进行比较（赢、输、平）,结算；
-    print(player1.name, player1.self_cards)
-    print(player2.name, player2.self_cards)
-    print(player3.name, player3.self_cards)
-    print(player4.name, player4.self_cards)
+#    print(player1.name, player1.self_cards,Comparator.give_rank(player1.self_cards))
+#    print(player2.name, player2.self_cards,Comparator.give_rank(player2.self_cards))
+#    print(player3.name, player3.self_cards,Comparator.give_rank(player3.self_cards))
+#    print(player4.name, player4.self_cards,Comparator.give_rank(player4.self_cards))
+#    print(Comparator.give_rank(c))
+#    print(player1.name, player1.self_cards,Comparator.give_rank(player1.self_cards))
+#    print(player2.name, player2.self_cards,Comparator.give_rank(player2.self_cards))
+#    print(player3.name, player3.self_cards,Comparator.give_rank(player3.self_cards))
+#    print(player4.name, player4.self_cards,Comparator.give_rank(player4.self_cards))
+#    print(Comparator.compare_cards(player1.self_cards,player2.self_cards))
+#    print(Comparator.compare_cards(player1.self_cards,player3.self_cards))
+#    print(Comparator.compare_cards(player1.self_cards,player4.self_cards))
     # 7.选出牌型最大的玩家切牌，选择第一个抽牌的玩家；
     # 8.从第3步重新开始。
     # 9.两副牌以后换庄，所有人都做过一次庄为一轮。    
